@@ -1,0 +1,60 @@
+---
+title: "Orange Tree Linear Model"
+author: "hangulandy"
+date: "7/5/2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+
+## General
+
+### Synopsis
+
+This project creates an application that allows the user to choose which subject data to use to develop a linear model.
+
+### Data 
+
+The data are the Orange data from the datasets package that comes with R.
+
+### Application Location
+
+Application is hosted at https://hangulandy.shinyapps.io/orange_trees/
+
+## Application Instructions
+
+From the 'Scatter Plot' tab, select from the check boxes on the left the trees you wish to consider in your final model.
+
+The points will be displayed on the graph as a line graph. Additionally, all selected points will be used in a linear regression model whose coefficients may be seen at the bottom of the main panel.
+
+Toggle the check boxes to see the effects of their inclusion on the model.
+
+## Modified Function
+
+This code is written as two reactive functions in the server.R file in order to react to dynamic input.  Here it is simplified to run directly in this output presentation file.
+
+```{r}
+dat <- Orange[Orange[, 1] %in% c("1", "2"), ]
+output <- ggplot(dat, aes(x = age, y = circumference)) + 
+        geom_point(aes(color = Tree)) + geom_line(aes(color = Tree)) + 
+        geom_smooth(method = "lm", color = "black") + ggtitle("Tree Data") + 
+        theme(plot.title = element_text(hjust = 0.5)) + 
+        labs(x = "Age (Days since 1968/12/31)", y = "Circumference (mm)")
+mod <- lm(data = dat, circumference ~ age)
+coef1 <- mod$coefficients[1]
+coef2 <- mod$coefficients[2]
+```
+
+## Example Output
+
+Using trees 1 and 2 generates output:
+
+```{r fig.width=4, fig.height=3, echo=FALSE}
+output
+print(paste("Model Slope: ", coef2, sep = ""))
+print(paste("Model Intercept: ", coef1, sep = ""))
+```
+
